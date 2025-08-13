@@ -40,11 +40,9 @@
     .wrap { max-width: 1100px; margin: 0 auto; padding: clamp(16px, 3vw, 28px); }
     header { display:flex; align-items:center; justify-content:space-between; gap:16px; margin-bottom: 14px; }
     .brand { display:flex; align-items:center; gap:12px; }
-    .logo { width: 40px; height: 40px; border-radius: 10px;
-      /* keep a visible accent but neutral shape; actual installed icon comes from manifest */
-      background: radial-gradient(circle at 30% 30%, #22d3ee, #1d4ed8);
-      box-shadow: var(--shadow);
-    }
+    .logo { width: 40px; height: 40px; border-radius: 8px;
+      background: url('icon-512.png') center/cover no-repeat;
+      box-shadow: var(--shadow); }
     h1 { font-size: clamp(20px, 5vw, 28px); margin:0; letter-spacing:.3px; }
 
     .card {
