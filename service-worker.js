@@ -1,13 +1,58 @@
-// Cache version v10.5a (icon link tags + maskable)
-const CACHE = 'strap-log-v10_5a';
-const ASSETS = ['./','./index.html?v=10.5a','./manifest.webmanifest','./icons/icon-192.png','./icons/icon-512.png','./icons/apple-touch-icon.png'];
-self.addEventListener('install', e => { e.waitUntil(caches.open(CACHE).then(c => c.addAll(ASSETS))); self.skipWaiting(); });
-self.addEventListener('activate', e => { e.waitUntil(caches.keys().then(keys => Promise.all(keys.map(k => k!==CACHE && caches.delete(k))))); self.clients.claim(); });
-self.addEventListener('fetch', e => {
-  const req = e.request; const url = new URL(req.url);
-  if (req.mode === 'navigate') { e.respondWith(caches.match('./index.html?v=10.5a').then(r => r || fetch('./index.html?v=10.5a'))); return; }
-  e.respondWith(caches.match(req).then(cached => cached || fetch(req).then(res => {
-    try { if (req.method==='GET' && url.origin===self.location.origin) { caches.open(CACHE).then(c => c.put(req, res.clone())); } } catch(e){}
-    return res;
-  }).catch(() => caches.match('./index.html?v=10.5a'))));
+
+const CACHE_NAME = 'strap-pwa-cache-v1';
+const APP_SHELL = [
+  './',
+  './index.html',
+  './manifest.webmanifest',
+  './icons/icon-192.png',
+  './icons/icon-512.png',
+  './icons/apple-touch-icon.png'
+];
+
+self.addEventListener('install', (event) => {
+  self.skipWaiting();
+  event.waitUntil(caches.open(CACHE_NAME).then(cache => cache.addAll(APP_SHELL)));
+});
+
+self.addEventListener('activate', (event) => {
+  event.waitUntil((async () => {
+    const keys = await caches.keys();
+    await Promise.all(keys.map(k => k !== CACHE_NAME && caches.delete(k)));
+    await self.clients.claim();
+  })());
+});
+
+// Network-first for HTML, cache-first for others
+self.addEventListener('fetch', (event) => {
+  const req = event.request;
+  const url = new URL(req.url);
+
+  if (req.mode === 'navigate' || (req.destination === 'document' && url.origin === location.origin)) {
+    event.respondWith((async () => {
+      try {
+        const fresh = await fetch(req);
+        const cache = await caches.open(CACHE_NAME);
+        cache.put('./index.html', fresh.clone());
+        return fresh;
+      } catch (e) {
+        const cache = await caches.open(CACHE_NAME);
+        const cached = await cache.match('./index.html');
+        return cached || Response.error();
+      }
+    })());
+    return;
+  }
+
+  event.respondWith((async () => {
+    const cache = await caches.open(CACHE_NAME);
+    const cached = await cache.match(req);
+    if (cached) return cached;
+    try {
+      const fresh = await fetch(req);
+      cache.put(req, fresh.clone());
+      return fresh;
+    } catch (e) {
+      return cached || Response.error();
+    }
+  })());
 });
