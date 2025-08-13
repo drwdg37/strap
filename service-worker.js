@@ -1,5 +1,5 @@
 
-const CACHE_NAME = 'strap-pwa-cache-v2';
+const CACHE_NAME = 'strap-pwa-cache-v3';
 const APP_SHELL = [
   './',
   './index.html',
@@ -22,12 +22,10 @@ self.addEventListener('activate', (event) => {
   })());
 });
 
-// Network-first for HTML, cache-first for others
 self.addEventListener('fetch', (event) => {
   const req = event.request;
-  const url = new URL(req.url);
 
-  if (req.mode === 'navigate' || (req.destination === 'document' && url.origin === location.origin)) {
+  if (req.mode === 'navigate') {
     event.respondWith((async () => {
       try {
         const fresh = await fetch(req);
