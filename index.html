@@ -25,6 +25,8 @@
       --input-bg: #ffffff;
       --chip-bg: #ffffff;
       --tile-h: 84px;
+      --touch-target: 44px;
+      --ipad-padding: 24px;
     }
     html, body { height: 100%; }
     * { -webkit-tap-highlight-color: transparent; box-sizing: border-box; }
@@ -35,6 +37,18 @@
       font: 16px/1.45 system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
     }
     .wrap { max-width: 1100px; margin: 0 auto; padding: clamp(16px, 3vw, 28px); }
+    
+    /* iPad optimizations */
+    @media screen and (min-width: 768px) and (max-width: 1024px) {
+      .wrap { padding: var(--ipad-padding); }
+      .grid-3 { gap: 20px; }
+      .card { padding: clamp(20px, 4vw, 28px); }
+    }
+    
+    @media screen and (min-width: 1024px) {
+      .wrap { padding: 32px; }
+      .grid-3 { gap: 24px; }
+    }
     header { display:flex; align-items:center; justify-content:space-between; gap:16px; margin-bottom: 14px; }
     .brand { display:flex; align-items:center; gap:12px; }
     img.logo { width: 40px; height: 40px; border-radius: 8px; object-fit: cover; box-shadow: var(--shadow); display: block; }
@@ -69,16 +83,48 @@
       width: 100%; padding: 14px 12px; border-radius: 12px;
       border: 1px solid var(--border-2);
       background: var(--input-bg); color: var(--text); outline: none;
+      font-size: 16px; /* Prevents zoom on iOS */
+      transition: all 0.2s ease;
     }
     input::placeholder { color: #6b7280; }
+    input:focus, select:focus { 
+      border-color: var(--accent); 
+      box-shadow: 0 0 0 3px rgba(34, 211, 238, 0.1);
+      transform: translateY(-1px);
+    }
+    
+    /* iPad form optimizations */
+    @media screen and (min-width: 768px) {
+      input[type="text"], select { 
+        padding: 16px 14px; 
+        font-size: 18px;
+        min-height: var(--touch-target);
+      }
+      label { font-size: 16px; margin-bottom: 8px; }
+    }
 
     .row { display:flex; gap: 12px; align-items:center; flex-wrap: wrap; }
-    .btn { appearance:none; border:0; padding: 14px 18px; border-radius: 12px; font-weight:700;
+    .btn { 
+      appearance:none; border:0; padding: 14px 18px; border-radius: 12px; font-weight:700;
       letter-spacing:.3px; color:#0b1020; background: linear-gradient(135deg, var(--accent), var(--accent-2));
-      box-shadow: var(--shadow); cursor:pointer; }
+      box-shadow: var(--shadow); cursor:pointer; 
+      min-height: var(--touch-target);
+      min-width: var(--touch-target);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s ease;
+    }
     .btn.secondary { background: var(--panel); color: var(--text); border: 1px solid var(--border-2); }
     .btn.danger { background: linear-gradient(135deg, #f87171, var(--danger)); color:#0b1020; }
     .btn:active { transform: translateY(1px); }
+    .btn:hover { transform: translateY(-1px); box-shadow: 0 15px 35px rgba(0,0,0,.15); }
+    
+    /* iPad touch optimizations */
+    @media screen and (min-width: 768px) {
+      .btn { padding: 16px 24px; font-size: 16px; }
+      .row { gap: 16px; }
+    }
 
     .section-title { font-weight:800; letter-spacing:.6px; margin:2px 0 10px; text-transform:uppercase; font-size:14px; color:#111827; }
 
@@ -89,12 +135,37 @@
       gap: 12px;
       position: relative;
     }
+    
+    /* iPad selection grid optimizations */
+    @media screen and (min-width: 768px) {
+      #selectionGrid {
+        gap: 16px;
+        grid-auto-rows: 70px;
+      }
+    }
     .chip {
       display:flex; flex-direction:column; align-items:center; justify-content:center;
       padding: 10px; border-radius: 14px; user-select:none; -webkit-user-select:none;
       border: 0 !important; background: var(--chip-bg); color: var(--text);
       cursor:pointer; font-weight:800; text-align:center; box-shadow: var(--shadow); line-height:1.1;
       touch-action: manipulation;
+      min-height: var(--touch-target);
+      transition: all 0.2s ease;
+      position: relative;
+    }
+    
+    .chip:active { transform: scale(0.95); }
+    .chip:hover { transform: translateY(-2px); box-shadow: 0 15px 35px rgba(0,0,0,.15); }
+    
+    /* iPad chip optimizations */
+    @media screen and (min-width: 768px) {
+      .chip { 
+        padding: 14px; 
+        font-size: 16px;
+        min-height: 60px;
+      }
+      .chip .top { font-size: 16px; }
+      .chip .bottom { font-size: 20px; }
     }
     .spacer { pointer-events:none; background: transparent !important; border: 0 !important; outline: 0 !important; box-shadow: none !important; }
     .chip .top { display:block; font-size:14px; opacity:.9; pointer-events:none; }
@@ -109,6 +180,37 @@
     th { color:#111827; font-weight:800; }
     tbody tr:hover { background: var(--hover); }
     .hint { color: var(--muted); font-size: 13px; }
+    
+    /* iPad table optimizations */
+    @media screen and (min-width: 768px) {
+      th, td { 
+        padding: 14px 12px; 
+        font-size: 16px; 
+      }
+      th { font-size: 18px; }
+      .hint { font-size: 15px; }
+    }
+    
+    /* Better scrolling on iPad */
+    @media screen and (min-width: 768px) {
+      .card { overflow-x: auto; }
+      table { min-width: 800px; }
+    }
+    
+    /* Reason choices grid optimization for iPad */
+    @media screen and (min-width: 768px) {
+      #reasonChoices {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 16px;
+      }
+    }
+    
+    @media screen and (min-width: 1024px) {
+      #reasonChoices {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 18px;
+      }
+    }
   </style>
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" sizes="180x180" href="icons/apple-touch-icon.png">
@@ -177,7 +279,7 @@
 <div class="chip blank" style="grid-row:5;grid-column:3"></div>
 <div class="chip blank" style="grid-row:5;grid-column:4"></div>
 </div>
-<div class="hint" style="margin-top:6px">Select one selection to enable Submit.</div>
+<div class="hint" style="margin-top:6px">Select one selection to enable Submit. You can select up to 3 reasons.</div>
 </div>
 <div style="flex:1">
 <div class="section-title">Reason (from Skirting)</div>
@@ -217,7 +319,9 @@
 <th>Sorted By</th>
 <th>Lot Number</th>
 <th>Selection</th>
-<th>Reason</th>
+<th>Reason 1</th>
+<th>Reason 2</th>
+<th>Reason 3</th>
 <th>Timestamp</th>
 <th>Weight</th>
 <th>Grade</th>
@@ -237,8 +341,17 @@
   function toggleReason(btn){
     var chips = document.querySelectorAll('#reasonChoices .chip');
     var wasOn = btn.classList.contains('reason-selected');
-    for (var i=0;i<chips.length;i++){ chips[i].classList.remove('reason-selected'); }
-    if(!wasOn){ btn.classList.add('reason-selected'); }
+    var selectedCount = document.querySelectorAll('#reasonChoices .chip.reason-selected').length;
+    
+    if(wasOn){
+      btn.classList.remove('reason-selected');
+    } else {
+      if(selectedCount >= 3){
+        alert('Maximum of 3 reasons can be selected.');
+        return;
+      }
+      btn.classList.add('reason-selected');
+    }
   }
 </script>
 <script>
@@ -261,7 +374,10 @@
   const undoBtn = $('#undoBtn');
 
   function getSelectedSelection(){ return selectionGroup.querySelector('.chip.sel-selected'); }
-  function getSelectedReason(){ const el = reasonGroup.querySelector('.chip.reason-selected'); return el ? el.getAttribute('data-value') : ''; }
+  function getSelectedReasons(){ 
+    const els = reasonGroup.querySelectorAll('.chip.reason-selected'); 
+    return Array.from(els).map(el => el.getAttribute('data-value')); 
+  }
 
   function readLog(){ try { return JSON.parse(localStorage.getItem(LS_KEY) || '[]'); } catch(e) { return []; } }
   function writeLog(data){ try { localStorage.setItem(LS_KEY, JSON.stringify(data)); } catch(e){} }
@@ -269,13 +385,16 @@
   function renderTable(){
     const data = readLog();
     tableBody.innerHTML = data.map((row, idx)=>{
+      const reasons = row.reasons || (row.reason ? [row.reason] : []);
       return '<tr>' +
         '<td>'+(idx+1)+'</td>' +
         '<td>'+escapeHtml(row.packer)+'</td>' +
         '<td>'+escapeHtml(row.sortedBy)+'</td>' +
         '<td>'+escapeHtml(row.lot)+'</td>' +
         '<td>'+escapeHtml(row.selection)+'</td>' +
-        '<td>'+escapeHtml(row.reason)+'</td>' +
+        '<td>'+escapeHtml(reasons[0] || '')+'</td>' +
+        '<td>'+escapeHtml(reasons[1] || '')+'</td>' +
+        '<td>'+escapeHtml(reasons[2] || '')+'</td>' +
         '<td>'+fmtDateTime(row.ts)+'</td>' +
         '<td>'+escapeHtml(row.weight)+'</td>' +
         '<td>'+escapeHtml(row.grade)+'</td>' +
@@ -293,7 +412,7 @@
     const sortedBy = (sortedByEl.value || '').trim();
     const lot = (lotEl.value || '').trim();
     const selBtn = getSelectedSelection();
-    const reason = getSelectedReason();
+    const reasons = getSelectedReasons();
 
     if(!packer){ alert('Please choose a Packer.'); return; }
     if(!/^[A-Za-z0-9]{1,6}$/.test(lot)){ alert('Lot Number must be 1–6 letters/numbers (e.g., 105 or 105CS).'); return; }
@@ -303,7 +422,7 @@
     const grade = selBtn.getAttribute('data-grade') || '';
     const selectionText = selBtn.getAttribute('data-selection') || '';
 
-    const entry = { packer, sortedBy, lot, selection: selectionText, reason, ts: new Date().toISOString(), weight, grade };
+    const entry = { packer, sortedBy, lot, selection: selectionText, reasons, ts: new Date().toISOString(), weight, grade };
 
     const data = readLog(); data.push(entry); writeLog(data);
 
@@ -325,8 +444,20 @@
 
   exportBtn.addEventListener('click', function(){
     const data = readLog();
-    const header = ['Packer','Sorted By','Lot Number','Selection','Reason','Timestamp','Weight','Grade'];
-    const rows = data.map(function(r){ return [r.packer, r.sortedBy, r.lot, r.selection, r.reason, r.ts, r.weight, r.grade]; });
+    const header = ['Packer','Sorted By','Lot Number','Selection','Reason 1','Reason 2','Reason 3','Timestamp','Weight','Grade'];
+    const rows = data.map(function(r){ 
+      const reasons = r.reasons || (r.reason ? [r.reason] : []);
+      const excelDate = r.ts ? new Date(r.ts).toLocaleString('en-US', {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        hour12: false
+      }).replace(/(\d+)\/(\d+)\/(\d+),?\s*(\d+):(\d+):(\d+)/, '$3-$1-$2 $4:$5:$6') : '';
+      return [r.packer, r.sortedBy, r.lot, r.selection, reasons[0] || '', reasons[1] || '', reasons[2] || '', excelDate, r.weight, r.grade]; 
+    });
     const csv = [header].concat(rows).map(function(cols){
       return cols.map(function(v){
         var s = String(v == null ? '' : v);
