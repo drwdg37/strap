@@ -3,7 +3,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/>
 <title>Strap Sorting Log</title>
 <meta content="#fdf6e3" name="theme-color"/>
 <style>
@@ -284,15 +284,17 @@
 <div style="flex:1">
 <div class="section-title">Reason (from Skirting)</div>
 <div id="reasonChoices" style="display:grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap:12px;">
+<!-- Left Column (7 buttons) -->
 <button class="chip single" data-value="Abraded Grain" onpointerup="toggleReason(this, event)" type="button">Abraded Grain</button>
-<button aria-hidden="true" class="chip single reason-spacer" disabled="" style="visibility:hidden; pointer-events:none; outline:0;" tabindex="-1" type="button"></button>
 <button class="chip single" data-value="Butcher Cut" onpointerup="toggleReason(this, event)" type="button">Butcher Cut</button>
 <button class="chip single" data-value="Draw" onpointerup="toggleReason(this, event)" type="button">Draw</button>
 <button class="chip single" data-value="Fat Wrinkle" onpointerup="toggleReason(this, event)" type="button">Fat Wrinkle</button>
 <button class="chip single" data-value="Folds" onpointerup="toggleReason(this, event)" type="button">Folds</button>
 <button class="chip single" data-value="Insects/Warts" onpointerup="toggleReason(this, event)" type="button">Insects/Warts</button>
 <button class="chip single" data-value="Machine Damage" onpointerup="toggleReason(this, event)" type="button">Machine Damage</button>
+<!-- Right Column (7 buttons) -->
 <button class="chip single" data-value="Manure/Urine/Kidney" onpointerup="toggleReason(this, event)" type="button">Manure/Urine/Kidney</button>
+<button class="chip single" data-value="Open Cuts" onpointerup="toggleReason(this, event)" type="button">Open Cuts</button>
 <button class="chip single" data-value="Puller Damage" onpointerup="toggleReason(this, event)" type="button">Puller Damage</button>
 <button class="chip single" data-value="Purple Stain" onpointerup="toggleReason(this, event)" type="button">Purple Stain</button>
 <button class="chip single" data-value="Scud" onpointerup="toggleReason(this, event)" type="button">Scud</button>
