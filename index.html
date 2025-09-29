@@ -472,11 +472,13 @@
         var s = String(v == null ? '' : v);
         // Always quote weight column (index 8) to prevent Excel date conversion
         if (index === 8) {
+          console.log('Weight column (index 8):', s, '->', '"' + s.replace(/"/g, '""') + '"');
           return '"' + s.replace(/"/g, '""') + '"';
         }
         return /[",\n]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s;
       }).join(',');
     }).join('\n');
+    console.log('Generated CSV sample:', csv.split('\n').slice(0, 3).join('\n'));
     const blob = new Blob([csv], {type: 'text/csv'});
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
