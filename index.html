@@ -465,15 +465,28 @@
         second: '2-digit',
         hour12: false
       }).replace(/(\d+)\/(\d+)\/(\d+),?\s*(\d+):(\d+):(\d+)/, '$3-$1-$2 $4:$5:$6') : '';
-      return [r.packer, r.sortedBy, r.lot, r.selection, reasons[0] || '', reasons[1] || '', reasons[2] || '', excelDate, r.weight, r.grade]; 
+      
+      // For Branded and 3X entries, use the grade as the weight in CSV
+      let weightForCSV = r.weight;
+      let gradeForCSV = r.grade;
+      
+      if (r.grade === 'Branded A/B' || r.grade === 'Branded D') {
+        weightForCSV = 'Branded';
+      } else if (r.grade === '3X - Strap') {
+        weightForCSV = '3X - Strap';
+        gradeForCSV = '3X - Strap';
+      }
+      
+      return [r.packer, r.sortedBy, r.lot, r.selection, reasons[0] || '', reasons[1] || '', reasons[2] || '', excelDate, weightForCSV, gradeForCSV]; 
     });
     const csv = [header].concat(rows).map(function(cols){
       return cols.map(function(v, index){
         var s = String(v == null ? '' : v);
-        // Always quote weight column (index 8) to prevent Excel date conversion
+        // Replace slashes with dots in weight column (index 8) to prevent Excel date conversion
         if (index === 8) {
-          console.log('Weight column (index 8):', s, '->', '"' + s.replace(/"/g, '""') + '"');
-          return '"' + s.replace(/"/g, '""') + '"';
+          s = s.replace(/\//g, '.');
+          console.log('Weight column (index 8):', String(v == null ? '' : v), '->', s);
+          return s; // No need to quote since dots won't be interpreted as dates
         }
         return /[",\n]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s;
       }).join(',');
